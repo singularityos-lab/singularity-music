@@ -1,6 +1,6 @@
 Template(class: "SingularityAppsMusicNowPlayingPage", parent: "GtkBox") {
-    VBox(halign: "center", valign: "center", hexpand: true, vexpand: true,
-         marginStart: 64, marginEnd: 64, marginTop: 24, marginBottom: 24) {
+    VBox(id: "content_box", halign: "center", valign: "center", hexpand: true, vexpand: true,
+         marginStart: 32, marginEnd: 32, marginTop: 24, marginBottom: 24) {
 
         Stack(id: "cover_stack", halign: "center",
               widthRequest: 160, heightRequest: 160, marginBottom: 28)

@@ -6,6 +6,13 @@
 
 Music player for the Singularity Desktop.
 
+- Library of the Music folder (or another folder chosen in Settings) by songs, albums and artists, with search
+- Queue with shuffle and repeat, Now Playing with synced lyrics, mini player, media keys and MPRIS
+- Sources from plugins: Jellyfin, Navidrome and Subsonic, Nextcloud, DLNA media servers; listens sent to ListenBrainz; lyrics from LRCLIB; missing covers from MusicBrainz (see `singularity-media-plugins`)
+- A separate Spotify section: with your own Spotify developer client ID it searches the catalog and shows your library, playlists, albums, artists and queue, and plays on the Spotify device you choose (Spotify streams audio only to its own apps); without one it shows and controls the Spotify app on this computer
+
+Accounts for the sources are added in Settings, Online Accounts. Each plugin can be switched off in Settings, Plugins, and the app options are in Settings, Apps, Music.
+
 ## Requirements
 
 - [Meson](https://mesonbuild.com/) >= 0.59

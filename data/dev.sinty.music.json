@@ -1,8 +1,46 @@
 {
-  "id": "dev.sinty.music",
-  "name": "Music",
-  "description": "Listen to your music collection",
-  "categories": ["AudioVideo", "Audio", "Player"],
-  "icon": "dev.sinty.music",
-  "exec": "singularity-music"
+    "id": "dev.sinty.music",
+    "name": "Music",
+    "description": "Listen to your music collection",
+    "categories": ["AudioVideo", "Audio", "Player"],
+    "icon": "dev.sinty.music",
+    "exec": "singularity-music",
+    "schema-id": "dev.sinty.music",
+    "settings": [
+        {
+            "key": "library-folder",
+            "label": "Library Folder",
+            "subtitle": "Folder whose songs make up the library; empty uses the Music folder",
+            "type": "string",
+            "widget": "entry"
+        },
+        {
+            "key": "show-spotify",
+            "label": "Spotify Section",
+            "subtitle": "Control the Spotify app and your Spotify devices from Music",
+            "type": "boolean",
+            "widget": "switch"
+        },
+        {
+            "key": "scrobble",
+            "label": "Record Listens",
+            "subtitle": "Send the songs you listen to to ListenBrainz when you have an account",
+            "type": "boolean",
+            "widget": "switch"
+        },
+        {
+            "key": "online-lyrics",
+            "label": "Lyrics from the Internet",
+            "subtitle": "Look up lyrics on LRCLIB",
+            "type": "boolean",
+            "widget": "switch"
+        },
+        {
+            "key": "online-artwork",
+            "label": "Album Details from the Internet",
+            "subtitle": "Look up missing covers and song details on MusicBrainz",
+            "type": "boolean",
+            "widget": "switch"
+        }
+    ]
 }

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="dev.sinty.music" path="/dev/sinty/music/">
+    <key name="library-folder" type="s">
+      <default>''</default>
+      <summary>Library folder</summary>
+      <description>Folder whose songs make up the library. Empty uses the Music folder.</description>
+    </key>
+    <key name="show-spotify" type="b">
+      <default>true</default>
+      <summary>Spotify section</summary>
+      <description>Show the Spotify section, which controls the Spotify app and, with a Spotify account, your Spotify devices.</description>
+    </key>
+    <key name="scrobble" type="b">
+      <default>true</default>
+      <summary>Record listens</summary>
+      <description>Send the songs you listen to to the listening history services of your online accounts, such as ListenBrainz.</description>
+    </key>
+    <key name="online-lyrics" type="b">
+      <default>true</default>
+      <summary>Lyrics from the internet</summary>
+      <description>Look up song lyrics on LRCLIB.</description>
+    </key>
+    <key name="online-artwork" type="b">
+      <default>true</default>
+      <summary>Album details from the internet</summary>
+      <description>Look up missing album covers and song details on MusicBrainz.</description>
+    </key>
+  </schema>
+</schemalist>

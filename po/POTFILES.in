@@ -7,3 +7,15 @@ src/music_window.vala
 src/now_playing_page.vala
 src/playlist.vala
 src/track_info.vala
+src/library_search.vala
+widget/now_playing_widget.vala
+src/browse_page.vala
+src/media_bin.vala
+src/control_strip.vala
+src/lyrics_view.vala
+src/spotify_page.vala
+src/sources/local_source.vala
+src/sources/spotify_bridge.vala
+src/remote_backend.vala
+src/music_library.vala
+src/pipe_player.vala

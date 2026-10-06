@@ -32,7 +32,7 @@ namespace Singularity.Apps.Music {
             box.add_css_class ("mini-player-box");
 
             // Album art
-            _cover_img = new Image.from_icon_name ("audio-x-generic-symbolic");
+            _cover_img = new Image.from_icon_name ("audio-x-generic");
             _cover_img.pixel_size = 64;
             _cover_img.add_css_class ("mini-player-cover");
             _cover_img.margin_start = 12;
@@ -83,16 +83,19 @@ namespace Singularity.Apps.Music {
             var prev_btn = new Button.from_icon_name ("media-skip-backward-symbolic");
             prev_btn.add_css_class ("flat");
             prev_btn.add_css_class ("circular");
+            prev_btn.tooltip_text = _("Previous");
             prev_btn.clicked.connect (() => prev_clicked ());
 
             _play_btn = new Button.from_icon_name ("media-playback-start-symbolic");
             _play_btn.add_css_class ("flat");
             _play_btn.add_css_class ("circular");
+            _play_btn.tooltip_text = _("Play / Pause");
             _play_btn.clicked.connect (() => play_pause_clicked ());
 
             var next_btn = new Button.from_icon_name ("media-skip-forward-symbolic");
             next_btn.add_css_class ("flat");
             next_btn.add_css_class ("circular");
+            next_btn.tooltip_text = _("Next");
             next_btn.clicked.connect (() => next_clicked ());
 
             var expand_btn = new Button.from_icon_name ("view-restore-symbolic");
@@ -114,8 +117,8 @@ namespace Singularity.Apps.Music {
             if (track == null) {
                 _title_lbl.label = _("No track playing");
                 _artist_lbl.label = "";
-                _cover_img.icon_name = "audio-x-generic-symbolic";
                 _cover_img.paintable = null;
+                _cover_img.icon_name = "audio-x-generic";
                 return;
             }
             _title_lbl.label = track.title;
@@ -123,8 +126,8 @@ namespace Singularity.Apps.Music {
             if (track.cover != null) {
                 _cover_img.paintable = track.cover;
             } else {
-                _cover_img.icon_name = "audio-x-generic-symbolic";
                 _cover_img.paintable = null;
+                _cover_img.icon_name = "audio-x-generic";
             }
         }
 
@@ -132,6 +135,10 @@ namespace Singularity.Apps.Music {
             _play_btn.icon_name = playing
                 ? "media-playback-pause-symbolic"
                 : "media-playback-start-symbolic";
+        }
+
+        public void reset_position () {
+            _seek_bar.set_value (0);
         }
 
         public void update_position (int64 pos, int64 dur) {

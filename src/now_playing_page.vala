@@ -17,6 +17,8 @@ namespace Singularity.Apps.Music {
         private Gdk.Texture?        _bg_texture   = null;
         private Gtk.CssProvider?    _css_provider = null;
 
+        [GtkChild (name = "content_box")] unowned Box _content_box;
+
         // ── Cover art ────────────────────────────────────────────────────
         [GtkChild (name = "cover_stack")] unowned Stack _cover_stack;
         private Picture          _cover_pic;
@@ -60,13 +62,13 @@ namespace Singularity.Apps.Music {
             hexpand   = true;
             vexpand   = true;
             add_css_class ("music-now-playing");
+            append (_content_box);
 
             // Cover-art stack pages (Gtk.Stack named children built here).
-            var fallback = new Image.from_icon_name ("audio-x-generic-symbolic");
+            var fallback = new Image.from_icon_name ("audio-x-generic");
             fallback.pixel_size = 96;
             fallback.valign     = Align.CENTER;
             fallback.halign     = Align.CENTER;
-            fallback.opacity    = 0.4;
             _cover_stack.add_named (fallback, "icon");
 
             _cover_pic = new Picture ();
@@ -96,6 +98,11 @@ namespace Singularity.Apps.Music {
             _vol_slider.set_range (0, 1);
             _vol_slider.set_value (1.0);
             _vol_slider.value_changed.connect (() => volume_changed (_vol_slider.get_value ()));
+        }
+
+        public double volume {
+            get { return _vol_slider.get_value (); }
+            set { _vol_slider.set_value (value.clamp (0, 1)); }
         }
 
         // ── Public update API ─────────────────────────────────────────────
@@ -135,6 +142,12 @@ namespace Singularity.Apps.Music {
             _seek_bar.set_value ((double) pos / (double) dur);
         }
 
+        public void reset_position () {
+            _pos_lbl.label = _fmt (0);
+            _dur_lbl.label = _fmt (0);
+            _seek_bar.set_value (0);
+        }
+
         public void set_playing (bool playing) {
             _play_btn.icon_name = playing
                 ? "media-playback-pause-symbolic"
@@ -167,6 +180,8 @@ namespace Singularity.Apps.Music {
 
         private void _set_bg (Gdk.Texture? tex) {
             _bg_texture = tex;
+            if (tex != null) add_css_class ("has-art");
+            else             remove_css_class ("has-art");
             queue_draw ();
         }
 
@@ -297,7 +312,7 @@ namespace Singularity.Apps.Music {
 
             _css_provider = prov;
             get_style_context ().add_provider (_css_provider,
-                Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION + 10);
+                Gtk.STYLE_PROVIDER_PRIORITY_USER + 10);
         }
 
         // ── Colour math helpers ───────────────────────────────────────────

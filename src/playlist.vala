@@ -11,6 +11,7 @@ namespace Singularity.Apps.Music {
         private bool _repeat_all = false;
 
         public signal void track_added (TrackInfo track);
+        public signal void track_inserted (int index, TrackInfo track);
         public signal void track_removed (int index);
         public signal void current_changed (TrackInfo? track);
         public signal void cleared ();
@@ -41,6 +42,18 @@ namespace Singularity.Apps.Music {
 
         public void add_uris (string[] uris) {
             foreach (var u in uris) add_uri (u);
+        }
+
+        public void add_track (TrackInfo track) {
+            _tracks.add (track);
+            track_added (track);
+        }
+
+        public void insert_next (TrackInfo track) {
+            int at = _current + 1;
+            if (at < 0 || at > _tracks.size) at = _tracks.size;
+            _tracks.insert (at, track);
+            track_inserted (at, track);
         }
 
         public TrackInfo? get_track (int i) {

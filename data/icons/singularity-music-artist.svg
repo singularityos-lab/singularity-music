@@ -1,0 +1,16 @@
+<svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<linearGradient id="head" x1="44" y1="12" x2="84" y2="76" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#9cc0ff"/><stop offset="1" stop-color="#3f6fd8"/></linearGradient>
+<linearGradient id="grill" x1="64" y1="16" x2="64" y2="72" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#e8eefc"/><stop offset="1" stop-color="#b8c6e6"/></linearGradient>
+<linearGradient id="body" x1="64" y1="74" x2="64" y2="116" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#5f6a80"/><stop offset="1" stop-color="#2f3646"/></linearGradient>
+<filter id="sh" x="-20%" y="-20%" width="140%" height="150%" color-interpolation-filters="sRGB"><feDropShadow dx="0" dy="3" stdDeviation="3.5" flood-color="#14244c" flood-opacity="0.45"/></filter>
+</defs>
+<g filter="url(#sh)">
+<path d="M58 72 H70 L74 112 A4 4 0 0 1 70 116 H58 A4 4 0 0 1 54 112 Z" fill="url(#body)"/>
+<rect x="52" y="66" width="24" height="12" rx="4" fill="#3f6fd8"/>
+<circle cx="64" cy="42" r="30" fill="url(#head)"/>
+<circle cx="64" cy="42" r="25" fill="url(#grill)"/>
+<path d="M44 34 H84 M41 42 H87 M44 50 H84 M50 26 H78 M50 58 H78" stroke="#8796bd" stroke-width="2.5" stroke-linecap="round"/>
+<path d="M44 26 A26 26 0 0 1 60 16" stroke="#ffffff" stroke-opacity="0.9" stroke-width="4" stroke-linecap="round"/>
+</g>
+</svg>

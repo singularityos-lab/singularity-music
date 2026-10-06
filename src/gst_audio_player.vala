@@ -4,19 +4,16 @@ using GLib;
 
 namespace Singularity.Apps.Music {
 
-    public class GstAudioPlayer : GLib.Object {
+    public class GstAudioPlayer : GLib.Object, PlayerBackend {
         private Gst.Element? _playbin;
         private uint _bus_watch_id = 0;
         private uint _pos_timer_id = 0;
         private bool _is_playing = false;
 
-        public signal void position_updated (int64 pos, int64 dur);
-        public signal void track_ended ();
-        public signal void error_occurred (string msg);
-        public signal void metadata_ready (string? title, string? artist, string? album,
-                                           int64 duration, Gdk.Paintable? cover);
+        private HashTable<string, string>? _headers = null;
 
         public bool is_playing { get { return _is_playing; } }
+        public bool can_seek { get { return true; } }
 
         public GstAudioPlayer () {
             _playbin = Gst.ElementFactory.make ("playbin", "playbin");
@@ -25,6 +22,15 @@ namespace Singularity.Apps.Music {
                 return;
             }
 
+            GLib.Signal.connect (_playbin, "source-setup", (GLib.Callback) _on_source_setup, this);
+            string? sink = Environment.get_variable ("SINGULARITY_MUSIC_AUDIO_SINK");
+            if (sink != null && sink.strip () != "") {
+                try {
+                    _playbin.set_property ("audio-sink", Gst.parse_bin_from_description (sink, true));
+                } catch (Error e) {
+                    warning ("GstAudioPlayer: %s", e.message);
+                }
+            }
             var bus = _playbin.get_bus ();
             _bus_watch_id = bus.add_watch (GLib.Priority.DEFAULT, _on_bus_message);
 
@@ -47,7 +53,7 @@ namespace Singularity.Apps.Music {
         private bool _on_bus_message (Gst.Bus bus, Gst.Message msg) {
             switch (msg.type) {
             case Gst.MessageType.EOS:
-                _is_playing = false;
+                _set_playing (false);
                 track_ended ();
                 break;
             case Gst.MessageType.ERROR:
@@ -97,25 +103,46 @@ namespace Singularity.Apps.Music {
             metadata_ready (title, artist, album, dur, cover);
         }
 
+        private static void _on_source_setup (Gst.Element playbin, Gst.Element source, GstAudioPlayer self) {
+            if (self._headers == null || source.get_class ().find_property ("extra-headers") == null) return;
+            var s = new Gst.Structure.empty ("extra-headers");
+            self._headers.foreach ((k, v) => {
+                if (k.down () == "user-agent" && source.get_class ().find_property ("user-agent") != null) source.set_property ("user-agent", v);
+                else s.set_value (k, v);
+            });
+            source.set_property ("extra-headers", s);
+        }
+
+        public void set_headers (HashTable<string, string>? headers) {
+            _headers = headers;
+        }
+
         public void load_uri (string uri) {
             _playbin.set_state (Gst.State.NULL);
             _playbin.set_property ("uri", uri);
-            _is_playing = false;
+            _set_playing (false);
+        }
+
+        private void _set_playing (bool playing) {
+            if (_is_playing == playing) return;
+            _is_playing = playing;
+            playing_changed (playing);
         }
 
         public void play () {
             if (_playbin == null) return;
             _playbin.set_state (Gst.State.PLAYING);
-            _is_playing = true;
+            _set_playing (true);
         }
 
         public void pause () {
             _playbin?.set_state (Gst.State.PAUSED);
-            _is_playing = false;
+            _set_playing (false);
         }
 
-        public void toggle_play_pause () {
-            if (_is_playing) pause (); else play ();
+        public void stop () {
+            _playbin?.set_state (Gst.State.NULL);
+            _set_playing (false);
         }
 
         public void seek (int64 pos_ns) {
@@ -125,6 +152,10 @@ namespace Singularity.Apps.Music {
 
         public void set_volume (double vol) {
             _playbin?.set_property ("volume", vol);
+        }
+
+        public void set_muted (bool muted) {
+            _playbin?.set_property ("mute", muted);
         }
 
         public int64 get_position () {

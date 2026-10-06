@@ -45,22 +45,50 @@ sources = files(
   'src/gst_audio_player.vala',
   'src/playlist.vala',
   'src/track_info.vala',
+  'src/library_search.vala',
+  'src/music_library.vala',
+  'src/player_backend.vala',
+  'src/remote_backend.vala',
+  'src/artwork.vala',
+  'src/control_strip.vala',
+  'src/media_bin.vala',
+  'src/browse_page.vala',
+  'src/lyrics_view.vala',
+  'src/spotify_page.vala',
+  'src/pipe_player.vala',
+  'src/sources/local_source.vala',
+  'src/sources/spotify_bridge.vala',
 )
 
 executable('singularity-music',
   sources + [resources],
-  dependencies: [gtk_dep, gee_dep, gst_dep, gst_tag_dep, gst_pbutils_dep, math_dep, libsingularity_dep],
+  vala_args: ['--pkg', 'posix'],
+  dependencies: [gtk_dep, gee_dep, gst_dep, gst_tag_dep, gst_pbutils_dep, soup_dep, dependency('gio-unix-2.0'), math_dep, libsingularity_dep],
   install: true
 )
 
 shared_module('singularity-music-widget',
   files('widget/now_playing_widget.vala'),
-  dependencies: [gtk_dep, soup_dep, libsingularity_dep],
+  dependencies: [gtk_dep, soup_dep, gee_dep, dependency('gio-unix-2.0'), libsingularity_dep],
   install: true,
   install_dir: get_option('libdir') / 'singularity' / 'widgets'
 )
 install_data('widget/dev.sinty.music.now-playing.widget',
   install_dir: get_option('datadir') / 'singularity' / 'widgets'
+)
+
+install_data('data/search-providers/dev.sinty.music.ini',
+  install_dir: get_option('datadir') / 'singularity' / 'search-providers'
+)
+
+service_conf = configuration_data()
+service_conf.set('bindir', get_option('prefix') / get_option('bindir'))
+configure_file(
+  input: 'data/dev.sinty.music.service.in',
+  output: 'dev.sinty.music.service',
+  configuration: service_conf,
+  install: true,
+  install_dir: get_option('datadir') / 'dbus-1' / 'services'
 )
 
 install_data('data/dev.sinty.music.desktop',
@@ -69,6 +97,33 @@ install_data('data/dev.sinty.music.desktop',
 install_data('data/dev.sinty.music.json',
   install_dir: get_option('datadir') / 'singularity' / 'app-settings'
 )
+install_data('data/dev.sinty.music.gschema.xml',
+  install_dir: get_option('datadir') / 'glib-2.0' / 'schemas'
+)
 install_data('data/icons/dev.sinty.music.svg',
   install_dir: get_option('datadir') / 'icons' / 'hicolor' / 'scalable' / 'apps'
 )
+
+sources_test = executable('music-sources-test',
+  files('tests/sources_test.vala', 'src/music_library.vala', 'src/track_info.vala', 'src/player_backend.vala',
+        'src/remote_backend.vala', 'src/sources/local_source.vala', 'src/pipe_player.vala'),
+  dependencies: [gtk_dep, gee_dep, gst_dep, gst_tag_dep, gst_pbutils_dep, soup_dep, math_dep, libsingularity_dep],
+  vala_args: ['--pkg', 'posix'],
+)
+test('music-sources', sources_test, env: ['XDG_CACHE_HOME=' + meson.current_build_dir() / 'test-cache', 'GSETTINGS_BACKEND=memory'], timeout: 120)
+
+bridge_test = executable('music-bridge-test',
+  files('tests/bridge_test.vala', 'src/sources/spotify_bridge.vala'),
+  dependencies: [gtk_dep, gee_dep, dependency('gio-unix-2.0')],
+)
+test('music-bridge', find_program('dbus-run-session'), args: ['--', bridge_test], env: ['XDG_DATA_DIRS=' + meson.current_build_dir() / 'no-apps'], depends: bridge_test)
+install_data(files(
+    'data/icons/singularity-music-liked.svg',
+    'data/icons/singularity-music-playlist.svg',
+    'data/icons/singularity-music-album.svg',
+    'data/icons/singularity-music-artist.svg',
+    'data/icons/singularity-music-queue.svg',
+    'data/icons/singularity-music-songs.svg',
+    'data/icons/singularity-music-recent.svg',
+  ),
+  install_dir: get_option('datadir') / 'icons' / 'hicolor' / 'scalable' / 'apps')

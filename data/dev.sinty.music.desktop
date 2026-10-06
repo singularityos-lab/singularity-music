@@ -6,6 +6,15 @@ Icon=dev.sinty.music
 Terminal=false
 Type=Application
 Categories=AudioVideo;Audio;Player;
-MimeType=audio/mpeg;audio/flac;audio/ogg;audio/wav;audio/aac;audio/x-vorbis+ogg;audio/x-flac;audio/mp4;audio/x-m4a;audio/opus;audio/webm;
+MimeType=audio/mpeg;audio/flac;audio/ogg;audio/wav;audio/aac;audio/x-vorbis+ogg;audio/x-flac;audio/mp4;audio/x-m4a;audio/x-opus+ogg;audio/webm;
 StartupNotify=true
 StartupWMClass=dev.sinty.music
+Actions=shuffle-all;open-files;
+
+[Desktop Action shuffle-all]
+Name=Shuffle All Music
+Exec=singularity-music --shuffle-all
+
+[Desktop Action open-files]
+Name=Open Files
+Exec=singularity-music --open-files

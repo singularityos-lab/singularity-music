@@ -57,6 +57,11 @@ namespace Singularity.Apps.Music {
         public signal void play_pause_requested ();
         public signal void next_requested ();
         public signal void previous_requested ();
+        public signal void play_requested ();
+        public signal void pause_requested ();
+        public signal void stop_requested ();
+        public signal void seek_requested (int64 offset_us);
+        public signal void position_requested (int64 position_us);
 
         public MprisPlayerObj () {
             var b = new GLib.VariantBuilder (new GLib.VariantType ("a{sv}"));
@@ -71,11 +76,11 @@ namespace Singularity.Apps.Music {
         public void play_pause ()                                             throws DBusError, IOError { play_pause_requested (); }
         public void next ()                                                   throws DBusError, IOError { next_requested (); }
         public void previous ()                                               throws DBusError, IOError { previous_requested (); }
-        public void play ()                                                   throws DBusError, IOError { play_pause_requested (); }
-        public void pause ()                                                  throws DBusError, IOError { play_pause_requested (); }
-        public void stop ()                                                   throws DBusError, IOError {}
-        public void seek (int64 offset)                                       throws DBusError, IOError {}
-        public void set_position (GLib.ObjectPath track_id, int64 pos)       throws DBusError, IOError {}
+        public void play ()                                                   throws DBusError, IOError { play_requested (); }
+        public void pause ()                                                  throws DBusError, IOError { pause_requested (); }
+        public void stop ()                                                   throws DBusError, IOError { stop_requested (); }
+        public void seek (int64 offset)                                       throws DBusError, IOError { seek_requested (offset); }
+        public void set_position (GLib.ObjectPath track_id, int64 pos)       throws DBusError, IOError { position_requested (pos); }
         public void open_uri (string uri)                                     throws DBusError, IOError {}
 
         [DBus (visible = false)]
