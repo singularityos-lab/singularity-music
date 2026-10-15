@@ -531,9 +531,9 @@ namespace SingularityMusicWidget {
                 var session = new Soup.Session();
                 session.timeout = 10;
                 var msg = new Soup.Message("GET", url);
-                session.send_and_read_async.begin(msg, Priority.DEFAULT, cancel, (o, r) => {
+                Singularity.HttpBody.read.begin(session, msg, 16 * 1024 * 1024, Priority.DEFAULT, cancel, (o, r) => {
                     try {
-                        var bytes = session.send_and_read_async.end(r);
+                        var bytes = Singularity.HttpBody.read.end(r);
                         if (cancel.is_cancelled() || msg.status_code != 200) return;
                         cover.paintable = Gdk.Texture.from_bytes(bytes);
                         cover_stack.visible_child_name = "art";

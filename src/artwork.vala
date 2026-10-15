@@ -42,7 +42,7 @@ namespace Singularity.Apps.Music {
                     if (!file.query_exists ()) {
                         if (_session == null) _session = new Soup.Session ();
                         var msg = new Soup.Message ("GET", url);
-                        var bytes = yield _session.send_and_read_async (msg, Priority.LOW, cancellable);
+                        var bytes = yield Singularity.HttpBody.read (_session, msg, 16 * 1024 * 1024, Priority.LOW, cancellable);
                         if (msg.status_code != 200 || bytes.get_size () == 0) return null;
                         DirUtils.create_with_parents (_dir, 0700);
                         FileUtils.set_data (path, bytes.get_data ());
