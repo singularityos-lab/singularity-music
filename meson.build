@@ -38,6 +38,7 @@ resources = gnome.compile_resources(
 
 sources = files(
   'src/main.vala',
+  'src/agent_intents.vala',
   'src/music_window.vala',
   'src/now_playing_page.vala',
   'src/mpris_exporter.vala',

@@ -33,6 +33,13 @@ namespace Singularity.Apps.Music {
             return get_is_remote () ? 0 : -1;
         }
 
+        public MusicLibrary library { get { return _search.library; } }
+
+        public MusicWindow ensure_window () {
+            activate ();
+            return _window;
+        }
+
         private void _shuffle_all () {
             hold ();
             _search.library.refresh.begin ((o, r) => {
@@ -114,6 +121,7 @@ namespace Singularity.Apps.Music {
             playback.append_section (null, p4);
             menu.append_submenu (_("Playback"), playback);
             set_menubar (menu);
+            MusicIntents.install (this);
             var quit = new SimpleAction ("quit", null);
             quit.activate.connect (() => {
                 foreach (var w in get_windows ().copy ()) w.close ();

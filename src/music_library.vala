@@ -35,6 +35,14 @@ namespace Singularity.Apps.Music {
         public string folder { get; set; default = ""; }
         public signal void changed ();
 
+        public async void settle () {
+            yield refresh ();
+            while (scanning) {
+                Timeout.add (100, settle.callback);
+                yield;
+            }
+        }
+
         public string root_folder () {
             if (folder.strip () != "") return folder.strip ();
             string? root = Environment.get_user_special_dir (UserDirectory.MUSIC);

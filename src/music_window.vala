@@ -1176,6 +1176,54 @@ namespace Singularity.Apps.Music {
             });
         }
 
+        public Playlist queue { get { return _playlist; } }
+        public TrackInfo? playing_track { owned get { return _current (); } }
+        public bool playing { get { return _player.is_playing; } }
+        public int64 position { get { return _player.get_position (); } }
+        public int64 duration { get { return _player.get_duration (); } }
+        public int repeat_mode { get { return _repeat_mode; } }
+        public double volume { get { return _now_playing.volume; } }
+
+        public void play_index (int index) {
+            _play_track (_playlist.play_index (index));
+            _update_welcome ();
+        }
+
+        public void set_playing (bool on) {
+            if (_current () == null || on == _player.is_playing) return;
+            _toggle_play ();
+        }
+
+        public void stop_playback () {
+            ((GLib.ActionGroup) this).activate_action ("stop", null);
+        }
+
+        public void seek_to (int64 pos_ns) {
+            int64 dur = _player.get_duration ();
+            if (dur > 0) pos_ns = int64.min (pos_ns, dur);
+            _player.seek (int64.max (0, pos_ns));
+        }
+
+        public void set_shuffle (bool on) {
+            if (on != _playlist.shuffle) _toggle_shuffle ();
+        }
+
+        public void set_repeat_mode (int mode) {
+            _set_repeat (mode.clamp (0, 2));
+        }
+
+        public void set_volume (double v) {
+            _now_playing.volume = v.clamp (0.0, 1.0);
+        }
+
+        public void next_track () {
+            _go_next ();
+        }
+
+        public void previous_track () {
+            _go_prev ();
+        }
+
         public void open_uris (string[] uris) {
             bool start = _playlist.current_index < 0;
             int first = _playlist.count;
