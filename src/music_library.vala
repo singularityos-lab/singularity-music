@@ -105,7 +105,9 @@ namespace Singularity.Apps.Music {
             HashMap<string, LibraryTrack>? found = null;
             SourceFunc cb = refresh.callback;
             new Thread<void> ("music-library", () => {
+                var background = Singularity.BackgroundWork.enter ();
                 found = scan (root, known);
+                background.finish ();
                 Idle.add ((owned) cb);
             });
             yield;
