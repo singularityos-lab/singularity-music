@@ -103,14 +103,16 @@ namespace Singularity.Apps.Music {
             var known = new HashMap<string, LibraryTrack> ();
             foreach (var e in tracks.entries) known[e.key] = e.value;
             HashMap<string, LibraryTrack>? found = null;
-            SourceFunc cb = refresh.callback;
-            new Thread<void> ("music-library", () => {
-                var background = Singularity.BackgroundWork.enter ();
-                found = scan (root, known);
-                background.finish ();
-                Idle.add ((owned) cb);
-            });
-            yield;
+            try {
+                yield Async.run<bool>((c) => {
+                    var background = Singularity.BackgroundWork.enter ();
+                    found = scan (root, known);
+                    background.finish ();
+                    return true;
+                }, Async.Qos.USER);
+            } catch (Error e) {
+                warning("%s", e.message);
+            }
             bool differs = found.size != tracks.size;
             if (!differs) {
                 foreach (var e in found.entries) {
