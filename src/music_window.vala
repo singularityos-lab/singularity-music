@@ -163,11 +163,19 @@ namespace Singularity.Apps.Music {
             string? helper = Environment.get_variable ("SINGULARITY_ACCOUNTS_SIGNIN");
             if (helper == null || !FileUtils.test (helper, FileTest.IS_EXECUTABLE)) {
                 helper = null;
+                string[] candidates = {};
                 try {
                     string self = FileUtils.read_link ("/proc/self/exe");
-                    string candidate = Path.build_filename (Path.get_dirname (Path.get_dirname (self)), "libexec", "singularity-accounts-signin");
-                    if (FileUtils.test (candidate, FileTest.IS_EXECUTABLE)) helper = candidate;
+                    candidates += Path.build_filename (Path.get_dirname (Path.get_dirname (self)), "libexec", "singularity-accounts-signin");
                 } catch (FileError e) {
+                }
+                candidates += "/usr/libexec/singularity-accounts-signin";
+                candidates += "/usr/local/libexec/singularity-accounts-signin";
+                foreach (unowned string candidate in candidates) {
+                    if (FileUtils.test (candidate, FileTest.IS_EXECUTABLE)) {
+                        helper = candidate;
+                        break;
+                    }
                 }
             }
             if (helper == null) {
