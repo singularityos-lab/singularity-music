@@ -33,6 +33,7 @@ namespace Singularity.Apps.Music {
         private BrowsePage _browse;
         private TransportStrip _transport;
         private Stack _main_stack;
+        private ListenNowPage _listen_now;
         private NowPlayingPage _now_playing;
         private LyricsView _lyrics;
         private Revealer _lyrics_revealer;
@@ -105,6 +106,7 @@ namespace Singularity.Apps.Music {
             _local_source = new LocalSource (library);
             _local_source.changed.connect (() => {
                 _browse.refresh_if_showing (LocalSource.ID);
+                if (_listen_now != null) _listen_now.reload ();
                 _update_welcome ();
             });
             _plugins = new Singularity.AppPluginHost ("dev.sinty.music", "music", Singularity.AppPluginHost.desktop_settings ());
@@ -127,7 +129,9 @@ namespace Singularity.Apps.Music {
             if (_settings != null) _settings.changed["show-spotify"].connect (() => _update_spotify_row ());
             _spotify.changed.connect (() => _update_spotify_row ());
 
-            _bin.select (LocalSource.ID, "songs");
+            _listen_now.set_source (_local_source);
+            _bin.set_active ("listen");
+            _browse_source = "listen";
             _browse.open_root (_local_source, "songs", _("Songs"));
             _update_welcome ();
         }
@@ -457,6 +461,11 @@ namespace Singularity.Apps.Music {
             _bin = new MediaBin ();
             _bin.navigate.connect ((source_id, node, title) => _navigate (source_id, node, title));
             _bin.now_playing_selected.connect (() => _show_player ());
+            _bin.listen_now_selected.connect (() => {
+                _root_stack.visible_child_name = "browse";
+                _browse_source = "listen";
+                _update_welcome ();
+            });
             _bin.open_files.connect (() => _open_files ());
             _bin.search_changed.connect ((text) => _on_search (text));
             set_sidebar (_bin);
@@ -478,6 +487,16 @@ namespace Singularity.Apps.Music {
             _browse.enqueue_items.connect ((items, next) => _enqueue (items, next));
             _browse.open_uri.connect ((uri) => _open_uri (uri));
             _main_stack.add_named (_browse, "browse");
+            _listen_now = new ListenNowPage ();
+            _listen_now.play_items.connect ((items, start, shuffle) => _play_items (items, start, shuffle));
+            _listen_now.open_item.connect ((item) => {
+                bool artist = item.kind == ItemKind.ARTIST;
+                _browse_source = LocalSource.ID;
+                _bin.select (LocalSource.ID, artist ? "artists" : "albums");
+                _browse.open_inside (_local_source, artist ? "artists" : "albums", artist ? _("Artists") : _("Albums"), item);
+                _main_stack.visible_child_name = "browse";
+            });
+            _main_stack.add_named (_listen_now, "listen");
 
             _welcome = new Singularity.Widgets.WelcomePage ();
             _welcome.app_icon_name = "dev.sinty.music";
@@ -572,7 +591,9 @@ namespace Singularity.Apps.Music {
             }
             bool empty = _local_source.library.all.size == 0 && !others && _playlist.count == 0;
             if (_main_stack.visible_child_name == "spotify") return;
-            _main_stack.visible_child_name = empty && _browse_source == LocalSource.ID ? "welcome" : "browse";
+            bool local = _browse_source == LocalSource.ID || _browse_source == "listen";
+            if (empty && local) _main_stack.visible_child_name = "welcome";
+            else _main_stack.visible_child_name = _browse_source == "listen" ? "listen" : "browse";
         }
 
         private void _navigate (string source_id, string? node, string title) {
@@ -614,6 +635,7 @@ namespace Singularity.Apps.Music {
                 var source = _sources.find (_browse_source) ?? _local_source;
                 if (text.strip () == "") {
                     _browse.close_search ();
+                    if (_browse_source == "listen") _update_welcome ();
                 } else if (source is Searchable) {
                     _main_stack.visible_child_name = "browse";
                     _browse.open_search (source, text.strip ());

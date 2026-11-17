@@ -13,11 +13,13 @@ namespace Singularity.Apps.Music {
         private SidebarSectionLabel _services_label;
         private Gee.HashMap<string, SidebarRow> _rows = new Gee.HashMap<string, SidebarRow> ();
         private SidebarRow _now_row;
+        private SidebarRow _listen_row;
         private string _active = "";
         private SearchBubble _search;
 
         public signal void navigate (string source_id, string? node, string title);
         public signal void now_playing_selected ();
+        public signal void listen_now_selected ();
         public signal void search_changed (string text);
         public signal void open_files ();
 
@@ -28,6 +30,12 @@ namespace Singularity.Apps.Music {
             _search = add_bubble_search (_("Search"), (t) => search_changed (t));
 
             box.append (_listen);
+            _listen_row = new SidebarRow ("media-playlist-play-symbolic", _("Listen Now"));
+            _listen_row.clicked.connect (() => {
+                set_active ("listen");
+                listen_now_selected ();
+            });
+            _listen.append (_listen_row);
             _now_row = new SidebarRow ("media-playback-start-symbolic", _("Now Playing"));
             _now_row.clicked.connect (() => {
                 set_active ("now");
@@ -70,6 +78,7 @@ namespace Singularity.Apps.Music {
         public void set_active (string k) {
             _active = k;
             _now_row.set_active (k == "now");
+            _listen_row.set_active (k == "listen");
             foreach (var e in _rows.entries) e.value.set_active (e.key == k);
         }
 

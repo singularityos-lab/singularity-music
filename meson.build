@@ -54,6 +54,7 @@ sources = files(
   'src/control_strip.vala',
   'src/media_bin.vala',
   'src/browse_page.vala',
+  'src/listen_now_page.vala',
   'src/lyrics_view.vala',
   'src/spotify_page.vala',
   'src/pipe_player.vala',

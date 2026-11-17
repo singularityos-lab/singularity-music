@@ -128,7 +128,7 @@ namespace Singularity.Apps.Music {
                 root.add (new MediaItem (ID, "artists", ItemKind.FOLDER, _("Artists")));
                 return root;
             }
-            if (library.all.size == 0 && (node == "songs" || node == "albums" || node == "artists")) return empty_library ();
+            if (library.all.size == 0 && (node == "songs" || node == "albums" || node == "artists" || node == "recent")) return empty_library ();
             var items = new Gee.ArrayList<MediaItem> ();
             if (node == "songs") {
                 foreach (var t in sorted_tracks ()) items.add (track_item (t));
@@ -137,6 +137,23 @@ namespace Singularity.Apps.Music {
             if (node == "albums") {
                 foreach (var e in albums ().entries) items.add (album_item (e.key, e.value));
                 return slice (new MediaPage (_("Albums")), items, token);
+            }
+            if (node == "recent") {
+                var map = albums ();
+                var newest = new Gee.HashMap<string, int64?> ();
+                var keys = new Gee.ArrayList<string> ();
+                foreach (var e in map.entries) {
+                    int64 m = 0;
+                    foreach (var t in e.value) m = int64.max (m, t.mtime);
+                    newest[e.key] = m;
+                    keys.add (e.key);
+                }
+                keys.sort ((a, b) => {
+                    int64 ma = newest[a], mb = newest[b];
+                    return ma < mb ? 1 : (ma > mb ? -1 : strcmp (a.casefold (), b.casefold ()));
+                });
+                foreach (var k in keys) items.add (album_item (k, map[k]));
+                return slice (new MediaPage (_("Recently Added")), items, token);
             }
             if (node == "artists") {
                 foreach (var e in artists ().entries) items.add (artist_item (e.key, e.value.size));

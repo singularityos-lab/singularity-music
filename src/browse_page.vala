@@ -185,6 +185,13 @@ namespace Singularity.Apps.Music {
             push (new BrowseLevel (source, node, title));
         }
 
+        public void open_inside (MediaSource source, string? node, string title, MediaItem item) {
+            _levels.clear ();
+            _levels.add (new BrowseLevel (source, node, title));
+            push (new BrowseLevel (source, item.id, item.title));
+            level_changed ();
+        }
+
         public void open_search (MediaSource source, string query) {
             var base_level = _levels.size > 0 ? _levels[0] : null;
             _levels.clear ();
