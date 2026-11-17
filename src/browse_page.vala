@@ -456,6 +456,7 @@ namespace Singularity.Apps.Music {
 
         private Widget make_tile (MediaItem it) {
             var child = new FlowBoxChild ();
+            Singularity.Focus.set_key (child, it.key);
             child.set_data<MediaItem> ("item", it);
             child.add_css_class ("music-tile");
             var box = new Box (Orientation.VERTICAL, 4);
@@ -490,6 +491,7 @@ namespace Singularity.Apps.Music {
         private Widget make_row (MediaItem it) {
             var row = new ListBoxRow ();
             row.set_data<MediaItem> ("item", it);
+            Singularity.Focus.set_key (row, it.key);
             row.activatable = it.browsable || it.playable;
             var h = new Box (Orientation.HORIZONTAL, 12);
             h.margin_start = 12;

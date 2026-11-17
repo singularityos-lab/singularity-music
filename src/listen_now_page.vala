@@ -95,12 +95,12 @@ namespace Singularity.Apps.Music {
                     continue;
                 }
                 _recent_items.add (it);
-                show_art (_recent.append_tile ("singularity-music-album", it.title, it.artist), it);
+                show_art (_recent.append_tile ("singularity-music-album", it.title, it.artist, it.key), it);
             }
             foreach (var it in artists) {
                 if (it.kind != ItemKind.ARTIST) continue;
                 _artist_items.add (it);
-                show_art (_artists.append_tile ("singularity-music-artist", it.title, it.subtitle), it);
+                show_art (_artists.append_tile ("singularity-music-artist", it.title, it.subtitle, it.key), it);
             }
             _hero.visible = _hero_item != null;
             if (_hero_item != null) {
