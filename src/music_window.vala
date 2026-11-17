@@ -506,6 +506,7 @@ namespace Singularity.Apps.Music {
             _transport.repeat_btn.clicked.connect (() => _cycle_repeat ());
             _transport.queue_btn.clicked.connect (() => _show_playlist_popover (_transport.queue_btn));
             browse_box.append (_transport);
+            ((Widget) this).realize.connect (() => get_surface ().layout.connect ((w, h) => _transport.fit_width (w)));
             _root_stack.add_named (browse_box, "browse");
 
             _now_playing = new NowPlayingPage ();

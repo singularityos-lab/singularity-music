@@ -50,6 +50,21 @@ namespace Singularity.Apps.Music {
         public signal void queue_remote (MediaItem item);
         public signal void level_changed ();
 
+        private Box _header;
+        private Singularity.Widgets.Window? _watched;
+
+        private void watch_window () {
+            var w = get_root () as Singularity.Widgets.Window;
+            if (w == null || w == _watched) return;
+            _watched = w;
+            w.notify["sidebar-toggle-shown"].connect (sync_inset);
+            sync_inset ();
+        }
+
+        private void sync_inset () {
+            _header.margin_start = _watched != null && _watched.sidebar_toggle_shown ? 64 : 24;
+        }
+
         public BrowsePage () {
             Object (orientation: Orientation.VERTICAL, spacing: 0);
             hexpand = true;
@@ -62,6 +77,8 @@ namespace Singularity.Apps.Music {
             header.margin_end = 160;
             header.margin_top = 18;
             header.margin_bottom = 6;
+            _header = header;
+            notify["root"].connect (watch_window);
             _back = new Button.from_icon_name ("go-previous-symbolic");
             _back.add_css_class ("flat");
             _back.tooltip_text = _("Back");

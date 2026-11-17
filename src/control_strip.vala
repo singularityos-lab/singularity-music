@@ -96,6 +96,18 @@ namespace Singularity.Apps.Music {
             set_has_track (false);
         }
 
+        private bool _compact = false;
+
+        public void fit_width (int width) {
+            bool want = _compact ? width < 760 : width < 700;
+            if (want == _compact) return;
+            _compact = want;
+            _time.visible = !_compact;
+            shuffle_btn.visible = !_compact;
+            repeat_btn.visible = !_compact;
+            _title.width_chars = _compact ? 8 : 18;
+        }
+
         private static string fmt (int64 ns) {
             int64 s = ns / 1000000000;
             if (s >= 3600) return "%d:%02d:%02d".printf ((int) (s / 3600), (int) (s / 60 % 60), (int) (s % 60));
