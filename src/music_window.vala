@@ -36,7 +36,7 @@ namespace Singularity.Apps.Music {
         private ListenNowPage _listen_now;
         private NowPlayingPage _now_playing;
         private LyricsView _lyrics;
-        private Revealer _lyrics_revealer;
+        private Singularity.Widgets.DetailPane _lyrics_pane;
         private Button _mini_btn;
         private Button _share_btn;
         private Button _back_btn;
@@ -545,14 +545,11 @@ namespace Singularity.Apps.Music {
             _now_playing.playlist_btn.clicked.connect (() => _show_playlist_popover (_now_playing.playlist_btn));
 
             _lyrics = new LyricsView ();
-            _lyrics_revealer = new Revealer ();
-            _lyrics_revealer.transition_type = RevealerTransitionType.SLIDE_LEFT;
-            _lyrics_revealer.set_child (_lyrics);
-            _lyrics_revealer.reveal_child = false;
-            var player_row = new Box (Orientation.HORIZONTAL, 0);
-            player_row.append (_now_playing);
-            player_row.append (_lyrics_revealer);
-            _root_stack.add_named (player_row, "player");
+            _lyrics_pane = new Singularity.Widgets.DetailPane (_now_playing);
+            _lyrics_pane.panel_width = 280;
+            _lyrics_pane.set_panel (_lyrics);
+            _lyrics_pane.panel_closed.connect (() => _lyrics_btn.remove_css_class ("accent"));
+            _root_stack.add_named (_lyrics_pane, "player");
 
             _back_btn = add_bubble_icon ("go-previous-symbolic", _("Library (Ctrl+1)"), () => _show_browse ());
             _lyrics_btn = add_bubble_icon ("format-justify-left-symbolic", _("Lyrics (Ctrl+Y)"), () => _toggle_lyrics ());
@@ -1122,8 +1119,8 @@ namespace Singularity.Apps.Music {
         }
 
         private void _toggle_lyrics () {
-            _lyrics_revealer.reveal_child = !_lyrics_revealer.reveal_child;
-            if (_lyrics_revealer.reveal_child) _lyrics_btn.add_css_class ("accent");
+            _lyrics_pane.reveal_panel = !_lyrics_pane.reveal_panel;
+            if (_lyrics_pane.reveal_panel) _lyrics_btn.add_css_class ("accent");
             else _lyrics_btn.remove_css_class ("accent");
         }
 
