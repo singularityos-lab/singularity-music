@@ -1,0 +1,176 @@
+{
+ "format": 1,
+ "canvas": [
+  236,
+  236
+ ],
+ "box": [
+  14,
+  8,
+  222,
+  226
+ ],
+ "stack": [
+  {
+   "shadow": {
+    "dx": 0,
+    "dy": 5,
+    "blur": 6,
+    "color": "#0d081a",
+    "opacity": 0.45,
+    "region": [
+     -20,
+     -20,
+     276,
+     276
+    ]
+   },
+   "stack": [
+    {
+     "layer": "layers/000.svg",
+     "piece": "disc"
+    },
+    {
+     "layer": "layers/001.svg",
+     "piece": "disc"
+    }
+   ]
+  },
+  {
+   "layer": "layers/002.svg",
+   "piece": "disc"
+  },
+  {
+   "layer": "layers/003.svg",
+   "piece": "disc"
+  },
+  {
+   "layer": "layers/004.svg",
+   "piece": "disc"
+  },
+  {
+   "clip": "M14 112A104 104 0 1 0 222 112A104 104 0 1 0 14 112Z",
+   "stack": [
+    {
+     "layer": "layers/005.svg",
+     "piece": "reflections"
+    },
+    {
+     "layer": "layers/006.svg",
+     "piece": "reflections"
+    }
+   ]
+  },
+  {
+   "rim": "M14 112A104 104 0 1 0 222 112A104 104 0 1 0 14 112Z",
+   "light": [
+    14,
+    8,
+    222,
+    216
+   ],
+   "piece": "edge"
+  },
+  {
+   "shadow": {
+    "dx": 0,
+    "dy": 2,
+    "blur": 3,
+    "color": "#000000",
+    "opacity": 0.4,
+    "region": [
+     -20,
+     -20,
+     276,
+     276
+    ]
+   },
+   "stack": [
+    {
+     "layer": "layers/008.svg",
+     "piece": "label"
+    }
+   ]
+  },
+  {
+   "layer": "layers/009.svg",
+   "piece": "label"
+  },
+  {
+   "layer": "layers/010.svg",
+   "piece": "label"
+  },
+  {
+   "layer": "layers/011.svg",
+   "piece": "label"
+  },
+  {
+   "layer": "layers/012.svg",
+   "piece": "label"
+  }
+ ],
+ "motion": [
+  {
+   "piece": "disc",
+   "origin": [
+    118.0,
+    118.0
+   ],
+   "tracks": [
+    {
+     "kind": "opacity",
+     "from": [
+      1
+     ],
+     "at": 820,
+     "duration": 75,
+     "ease": "linear"
+    }
+   ]
+  },
+  {
+   "piece": "reflections",
+   "origin": [
+    118.0,
+    112.0
+   ],
+   "tracks": [
+    {
+     "kind": "rotate",
+     "from": [
+      -540
+     ],
+     "at": 0,
+     "duration": 820,
+     "ease": "out"
+    }
+   ]
+  },
+  {
+   "piece": "edge",
+   "origin": [
+    118.0,
+    118.0
+   ],
+   "tracks": []
+  },
+  {
+   "piece": "label",
+   "origin": [
+    118.0,
+    112.0
+   ],
+   "tracks": [
+    {
+     "kind": "rotate",
+     "from": [
+      -540
+     ],
+     "at": 0,
+     "duration": 820,
+     "ease": "out"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" fill="none"><defs><radialGradient id="n" cx="92" cy="86" r="32" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ffd08a" /><stop offset="0.6" stop-color="#ff8f4a" /><stop offset="1" stop-color="#e25a2a" /></radialGradient>
+<filter id="lift" x="-30%" y="-30%" width="160%" height="160%" color-interpolation-filters="sRGB"><feDropShadow dx="0" dy="2.5" stdDeviation="2.5" flood-color="#5a2205" flood-opacity="0.5" /></filter>
+</defs><g filter="url(#lift)">
+<circle cx="92" cy="88" r="27" fill="white" />
+<circle cx="92" cy="88" r="24" fill="url(#n)" />
+<path d="M98 72 V96.5 A6.5 6.5 0 1 1 93 90.2 V78 L86 79.6 V99 A6.5 6.5 0 1 1 81 92.7 V74.5 Z" fill="white" />
+</g>
+</svg>

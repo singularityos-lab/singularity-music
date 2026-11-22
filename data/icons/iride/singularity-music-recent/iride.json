@@ -1,0 +1,95 @@
+{
+ "format": 1,
+ "canvas": [
+  128,
+  128
+ ],
+ "box": [
+  14,
+  14,
+  114,
+  114
+ ],
+ "stack": [
+  {
+   "layer": "layers/parte-0.svg",
+   "piece": "dial"
+  },
+  {
+   "layer": "layers/parte-1.svg",
+   "piece": "minutes"
+  },
+  {
+   "layer": "layers/parte-2.svg",
+   "piece": "hours"
+  },
+  {
+   "layer": "layers/parte-3.svg",
+   "piece": "pivot"
+  }
+ ],
+ "motion": [
+  {
+   "piece": "dial",
+   "origin": [
+    64.0,
+    64.0
+   ],
+   "tracks": [
+    {
+     "kind": "opacity",
+     "from": [
+      1
+     ],
+     "at": 780,
+     "duration": 75,
+     "ease": "linear"
+    }
+   ]
+  },
+  {
+   "piece": "minutes",
+   "origin": [
+    64.0,
+    64.0
+   ],
+   "tracks": [
+    {
+     "kind": "rotate",
+     "from": [
+      -360
+     ],
+     "at": 0,
+     "duration": 780,
+     "ease": "out"
+    }
+   ]
+  },
+  {
+   "piece": "hours",
+   "origin": [
+    64.0,
+    64.0
+   ],
+   "tracks": [
+    {
+     "kind": "rotate",
+     "from": [
+      60
+     ],
+     "at": 0,
+     "duration": 700,
+     "ease": "out"
+    }
+   ]
+  },
+  {
+   "piece": "pivot",
+   "origin": [
+    64.0,
+    64.0
+   ],
+   "tracks": []
+  }
+ ]
+}

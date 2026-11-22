@@ -1,29 +1,16 @@
-<svg width="236" height="236" viewBox="0 0 236 236" fill="none" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<radialGradient id="mu_disc" cx="104" cy="92" r="130" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#4c4c5e"/><stop offset="1" stop-color="#22222c"/></radialGradient>
-<linearGradient id="mu_side" x1="0" y1="190" x2="0" y2="224" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#2a2a36"/><stop offset="1" stop-color="#121218"/></linearGradient>
-<linearGradient id="mu_label" x1="80" y1="70" x2="156" y2="154" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#c9a0fb"/><stop offset="0.5" stop-color="#8f5cf2"/><stop offset="1" stop-color="#6232bf"/></linearGradient>
-<clipPath id="mu_clip"><circle cx="118" cy="112" r="104"/></clipPath>
-<filter id="mu_shadow" x="-20" y="-20" width="276" height="276" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feDropShadow dx="0" dy="5" stdDeviation="6" flood-color="#0d081a" flood-opacity="0.45"/></filter>
-<filter id="mu_label_shadow" x="-20" y="-20" width="276" height="276" filterUnits="userSpaceOnUse"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.4"/></filter>
-</defs>
-<g filter="url(#mu_shadow)">
-<circle cx="118" cy="122" r="104" fill="url(#mu_side)"/>
-<circle cx="118" cy="112" r="104" fill="url(#mu_disc)"/>
-</g>
-<circle cx="118" cy="112" r="90" stroke="white" stroke-opacity="0.07" stroke-width="2.5"/>
-<circle cx="118" cy="112" r="78" stroke="white" stroke-opacity="0.06" stroke-width="2.5"/>
-<circle cx="118" cy="112" r="66" stroke="white" stroke-opacity="0.05" stroke-width="2.5"/>
-<g clip-path="url(#mu_clip)">
-<path d="M118 112L14.63 74.38A110 110 0 0 1 59.71 18.71Z" fill="white" opacity="0.1"/>
-<path d="M118 112L221.37 149.62A110 110 0 0 1 176.29 205.29Z" fill="white" opacity="0.06"/>
-</g>
-<circle cx="118" cy="112" r="102.5" stroke="white" stroke-opacity="0.3" stroke-width="3"/>
-<g filter="url(#mu_label_shadow)">
-<circle cx="118" cy="112" r="48" fill="url(#mu_label)"/>
-</g>
-<circle cx="118" cy="112" r="46" stroke="white" stroke-opacity="0.3" stroke-width="2"/>
-<path d="M86.05 100.37A34 34 0 0 1 112.1 78.52" stroke="white" stroke-opacity="0.45" stroke-width="6" stroke-linecap="round"/>
-<circle cx="118" cy="112" r="9" fill="#0a0a0f"/>
-<circle cx="118" cy="112" r="9" stroke="#c08bfa" stroke-opacity="0.5" stroke-width="2"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="236" height="236" viewBox="0.194690 0.164905 235.610619 235.974630" preserveAspectRatio="none"><defs><filter id="shadow1" x="-20" y="-20" width="276" height="276" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feDropShadow dx="0" dy="5" stdDeviation="6" flood-color="#0d081a" flood-opacity="0.45"/></filter></defs><g filter="url(#shadow1)"><g fill="none"><defs><linearGradient id="l2-mu_side" x1="0" y1="190" x2="0" y2="224" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#2a2a36" /><stop offset="1" stop-color="#121218" /></linearGradient>
+</defs><circle cx="118" cy="122" r="104" fill="url(#l2-mu_side)" />
+</g><g fill="none"><defs><radialGradient id="l3-mu_disc" cx="104" cy="92" r="130" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#4c4c5e" /><stop offset="1" stop-color="#22222c" /></radialGradient>
+</defs><circle cx="118" cy="112" r="104" fill="url(#l3-mu_disc)" />
+</g></g><g fill="none"><circle cx="118" cy="112" r="90" stroke="white" stroke-opacity="0.07" stroke-width="2.5" />
+</g><g fill="none"><circle cx="118" cy="112" r="78" stroke="white" stroke-opacity="0.06" stroke-width="2.5" />
+</g><g fill="none"><circle cx="118" cy="112" r="66" stroke="white" stroke-opacity="0.05" stroke-width="2.5" />
+</g><defs><clipPath id="clip7"><path d="M14 112 A104 104 0 1 0 222 112 A104 104 0 1 0 14 112 Z" clip-rule="nonzero"/></clipPath></defs><g clip-path="url(#clip7)"><g fill="none"><path d="M118 112L14.63 74.38A110 110 0 0 1 59.71 18.71Z" fill="white" opacity="0.1" />
+</g><g fill="none"><path d="M118 112L221.37 149.62A110 110 0 0 1 176.29 205.29Z" fill="white" opacity="0.06" />
+</g></g><defs><clipPath id="rim10"><path d="M14 112A104 104 0 1 0 222 112A104 104 0 1 0 14 112Z" clip-rule="nonzero"/></clipPath><linearGradient id="rim10g0" x1="14" y1="8" x2="170" y2="216" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ffffff" stop-opacity="0.200"/><stop offset="1" stop-color="#ffffff" stop-opacity="0.100"/></linearGradient><linearGradient id="rim10g1" x1="14" y1="8" x2="170" y2="216" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ffffff" stop-opacity="0.950"/><stop offset="0.45" stop-color="#ffffff" stop-opacity="0.600"/><stop offset="1" stop-color="#ffffff" stop-opacity="0.250"/></linearGradient><linearGradient id="rim10g2" x1="14" y1="8" x2="170" y2="216" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ffffff" stop-opacity="0.050"/><stop offset="0.7" stop-color="#ffffff" stop-opacity="0.150"/><stop offset="1" stop-color="#ffffff" stop-opacity="0.420"/></linearGradient></defs><g clip-path="url(#rim10)"><path d="M14 112A104 104 0 1 0 222 112A104 104 0 1 0 14 112Z" fill="none" stroke="url(#rim10g0)" stroke-width="3"/><path d="M14 112A104 104 0 1 0 222 112A104 104 0 1 0 14 112ZM15.68 114.8 A104 104 0 1 0 223.68 114.8 A104 104 0 1 0 15.68 114.8 Z" fill="url(#rim10g1)" fill-rule="evenodd"/><path d="M14 112A104 104 0 1 0 222 112A104 104 0 1 0 14 112ZM13.04 110.4 A104 104 0 1 0 221.04 110.4 A104 104 0 1 0 13.04 110.4 Z" fill="url(#rim10g2)" fill-rule="evenodd"/></g><defs><filter id="shadow11" x="-20" y="-20" width="276" height="276" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.4"/></filter></defs><g filter="url(#shadow11)"><g fill="none"><defs><linearGradient id="l12-mu_label" x1="80" y1="70" x2="156" y2="154" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#c9a0fb" /><stop offset="0.5" stop-color="#8f5cf2" /><stop offset="1" stop-color="#6232bf" /></linearGradient>
+</defs><circle cx="118" cy="112" r="48" fill="url(#l12-mu_label)" />
+</g></g><g fill="none"><circle cx="118" cy="112" r="46" stroke="white" stroke-opacity="0.3" stroke-width="2" />
+</g><g fill="none"><path d="M86.05 100.37A34 34 0 0 1 112.1 78.52" stroke="white" stroke-opacity="0.45" stroke-width="6" stroke-linecap="round" />
+</g><g fill="none"><circle cx="118" cy="112" r="9" fill="#0a0a0f" />
+</g><g fill="none"><circle cx="118" cy="112" r="9" stroke="#c08bfa" stroke-opacity="0.5" stroke-width="2" />
+</g></svg>

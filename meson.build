@@ -106,6 +106,32 @@ install_data('data/icons/dev.sinty.music.svg',
   install_dir: get_option('datadir') / 'icons' / 'hicolor' / 'scalable' / 'apps'
 )
 
+iride = find_program('iride', required: get_option('iride'))
+if iride.found()
+  custom_target('iride-icon-dev-sinty-music',
+    input: 'data/icons/iride/dev.sinty.music/iride.json',
+    output: 'dev.sinty.music.iride',
+    depend_files: files(
+      'data/icons/iride/dev.sinty.music/layers/000.svg',
+      'data/icons/iride/dev.sinty.music/layers/001.svg',
+      'data/icons/iride/dev.sinty.music/layers/002.svg',
+      'data/icons/iride/dev.sinty.music/layers/003.svg',
+      'data/icons/iride/dev.sinty.music/layers/004.svg',
+      'data/icons/iride/dev.sinty.music/layers/005.svg',
+      'data/icons/iride/dev.sinty.music/layers/006.svg',
+      'data/icons/iride/dev.sinty.music/layers/007.svg',
+      'data/icons/iride/dev.sinty.music/layers/008.svg',
+      'data/icons/iride/dev.sinty.music/layers/009.svg',
+      'data/icons/iride/dev.sinty.music/layers/010.svg',
+      'data/icons/iride/dev.sinty.music/layers/011.svg',
+      'data/icons/iride/dev.sinty.music/layers/012.svg',
+    ),
+    command: [iride, 'build', meson.current_source_dir() / 'data' / 'icons' / 'iride' / 'dev.sinty.music', '@OUTPUT@'],
+    install: true,
+    install_dir: get_option('datadir') / 'icons' / 'hicolor' / 'scalable' / 'apps'
+  )
+endif
+
 sources_test = executable('music-sources-test',
   files('tests/sources_test.vala', 'src/music_library.vala', 'src/track_info.vala', 'src/player_backend.vala',
         'src/remote_backend.vala', 'src/sources/local_source.vala', 'src/pipe_player.vala'),
@@ -129,3 +155,107 @@ install_data(files(
     'data/icons/singularity-music-recent.svg',
   ),
   install_dir: get_option('datadir') / 'icons' / 'hicolor' / 'scalable' / 'apps')
+
+if iride.found()
+  custom_target('iride-icon-singularity-music-album',
+    input: 'data/icons/iride/singularity-music-album/iride.json',
+    output: 'singularity-music-album.iride',
+    depend_files: files(
+      'data/icons/iride/singularity-music-album/layers/000.svg',
+    ),
+    command: [iride, 'build', meson.current_source_dir() / 'data' / 'icons' / 'iride' / 'singularity-music-album', '@OUTPUT@'],
+    install: true,
+    install_dir: get_option('datadir') / 'icons' / 'hicolor' / 'scalable' / 'apps'
+  )
+endif
+
+if iride.found()
+  custom_target('iride-icon-singularity-music-artist',
+    input: 'data/icons/iride/singularity-music-artist/iride.json',
+    output: 'singularity-music-artist.iride',
+    depend_files: files(
+      'data/icons/iride/singularity-music-artist/layers/000.svg',
+    ),
+    command: [iride, 'build', meson.current_source_dir() / 'data' / 'icons' / 'iride' / 'singularity-music-artist', '@OUTPUT@'],
+    install: true,
+    install_dir: get_option('datadir') / 'icons' / 'hicolor' / 'scalable' / 'apps'
+  )
+endif
+
+if iride.found()
+  custom_target('iride-icon-singularity-music-liked',
+    input: 'data/icons/iride/singularity-music-liked/iride.json',
+    output: 'singularity-music-liked.iride',
+    depend_files: files(
+      'data/icons/iride/singularity-music-liked/layers/000.svg',
+    ),
+    command: [iride, 'build', meson.current_source_dir() / 'data' / 'icons' / 'iride' / 'singularity-music-liked', '@OUTPUT@'],
+    install: true,
+    install_dir: get_option('datadir') / 'icons' / 'hicolor' / 'scalable' / 'apps'
+  )
+endif
+
+if iride.found()
+  custom_target('iride-icon-singularity-music-playlist',
+    input: 'data/icons/iride/singularity-music-playlist/iride.json',
+    output: 'singularity-music-playlist.iride',
+    depend_files: files(
+      'data/icons/iride/singularity-music-playlist/layers/000.svg',
+      'data/icons/iride/singularity-music-playlist/layers/001.svg',
+      'data/icons/iride/singularity-music-playlist/layers/parte-0.svg',
+      'data/icons/iride/singularity-music-playlist/layers/parte-1.svg',
+      'data/icons/iride/singularity-music-playlist/layers/parte-2.svg',
+      'data/icons/iride/singularity-music-playlist/layers/parte-3.svg',
+      'data/icons/iride/singularity-music-playlist/layers/parte-4.svg',
+    ),
+    command: [iride, 'build', meson.current_source_dir() / 'data' / 'icons' / 'iride' / 'singularity-music-playlist', '@OUTPUT@'],
+    install: true,
+    install_dir: get_option('datadir') / 'icons' / 'hicolor' / 'scalable' / 'apps'
+  )
+endif
+
+if iride.found()
+  custom_target('iride-icon-singularity-music-queue',
+    input: 'data/icons/iride/singularity-music-queue/iride.json',
+    output: 'singularity-music-queue.iride',
+    depend_files: files(
+      'data/icons/iride/singularity-music-queue/layers/000.svg',
+      'data/icons/iride/singularity-music-queue/layers/parte-0.svg',
+      'data/icons/iride/singularity-music-queue/layers/parte-1.svg',
+      'data/icons/iride/singularity-music-queue/layers/parte-2.svg',
+    ),
+    command: [iride, 'build', meson.current_source_dir() / 'data' / 'icons' / 'iride' / 'singularity-music-queue', '@OUTPUT@'],
+    install: true,
+    install_dir: get_option('datadir') / 'icons' / 'hicolor' / 'scalable' / 'apps'
+  )
+endif
+
+if iride.found()
+  custom_target('iride-icon-singularity-music-recent',
+    input: 'data/icons/iride/singularity-music-recent/iride.json',
+    output: 'singularity-music-recent.iride',
+    depend_files: files(
+      'data/icons/iride/singularity-music-recent/layers/000.svg',
+      'data/icons/iride/singularity-music-recent/layers/parte-0.svg',
+      'data/icons/iride/singularity-music-recent/layers/parte-1.svg',
+      'data/icons/iride/singularity-music-recent/layers/parte-2.svg',
+      'data/icons/iride/singularity-music-recent/layers/parte-3.svg',
+    ),
+    command: [iride, 'build', meson.current_source_dir() / 'data' / 'icons' / 'iride' / 'singularity-music-recent', '@OUTPUT@'],
+    install: true,
+    install_dir: get_option('datadir') / 'icons' / 'hicolor' / 'scalable' / 'apps'
+  )
+endif
+
+if iride.found()
+  custom_target('iride-icon-singularity-music-songs',
+    input: 'data/icons/iride/singularity-music-songs/iride.json',
+    output: 'singularity-music-songs.iride',
+    depend_files: files(
+      'data/icons/iride/singularity-music-songs/layers/000.svg',
+    ),
+    command: [iride, 'build', meson.current_source_dir() / 'data' / 'icons' / 'iride' / 'singularity-music-songs', '@OUTPUT@'],
+    install: true,
+    install_dir: get_option('datadir') / 'icons' / 'hicolor' / 'scalable' / 'apps'
+  )
+endif

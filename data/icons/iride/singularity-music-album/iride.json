@@ -1,0 +1,68 @@
+{
+ "format": 1,
+ "canvas": [
+  128,
+  128
+ ],
+ "box": [
+  14,
+  14,
+  114,
+  114
+ ],
+ "stack": [
+  {
+   "layer": "layers/000.svg",
+   "piece": "disc"
+  }
+ ],
+ "motion": [
+  {
+   "piece": "disc",
+   "origin": [
+    64.0,
+    64.0
+   ],
+   "tracks": [
+    {
+     "kind": "rotate",
+     "from": [
+      -360
+     ],
+     "at": 0,
+     "duration": 760,
+     "ease": "out"
+    },
+    {
+     "kind": "scale",
+     "from": [
+      0.84,
+      0.84
+     ],
+     "at": 0,
+     "duration": 300,
+     "ease": "out"
+    },
+    {
+     "kind": "scale",
+     "from": [
+      1.06,
+      1.06
+     ],
+     "at": 300,
+     "duration": 160,
+     "ease": "linear"
+    },
+    {
+     "kind": "opacity",
+     "from": [
+      1
+     ],
+     "at": 760,
+     "duration": 75,
+     "ease": "linear"
+    }
+   ]
+  }
+ ]
+}
