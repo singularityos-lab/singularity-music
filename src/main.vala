@@ -3,7 +3,7 @@ using GLib;
 
 namespace Singularity.Apps.Music {
 
-    public class MusicApp : Singularity.Application {
+    public class MusicApp : Singularity.Application, Singularity.Migration.Migratable {
 
         private MusicWindow? _window = null;
 
@@ -167,15 +167,56 @@ namespace Singularity.Apps.Music {
         }
 
         protected override void activate () {
+            if (_window == null) _window = _new_window ();
+            _window.present ();
+        }
+
+        private bool _styled = false;
+
+        private MusicWindow _new_window () {
             string[] gst_args = {};
             unowned string[] ua = gst_args;
             Gst.init (ref ua);
-
-            if (_window == null) {
+            if (!_styled) {
                 _setup_styles ();
-                _window = new MusicWindow (this, _search);
+                _styled = true;
             }
-            _window.present ();
+            return new MusicWindow (this, _search);
+        }
+
+        public void prepare_move () throws Singularity.Migration.MigrationError {
+            if (_window != null && _window.remote_playback) {
+                throw new Singularity.Migration.MigrationError.UNSUPPORTED (_("Music playing on a Spotify device stays on this device"));
+            }
+        }
+
+        public Variant save_model () {
+            return new VariantDict ().end ();
+        }
+
+        public async void restore_model (Variant model) throws Error {
+        }
+
+        public string window_kind (Gtk.Window w) {
+            if (w is MusicWindow) return "music";
+            if (w is MiniPlayer && _window != null) return "mini";
+            return "";
+        }
+
+        public Variant save_window (Gtk.Window w) {
+            return _window.save_migration ();
+        }
+
+        public string[] files () {
+            return _window != null ? _window.migration_files () : new string[0];
+        }
+
+        public async Gtk.Window? rebuild_window (string kind, Variant data) throws Error {
+            if (kind != "music" && kind != "mini") return null;
+            if (_window != null) _window.destroy ();
+            _window = _new_window ();
+            _window.restore_migration (data);
+            return kind == "mini" ? (_window.mini_window ?? _window) : _window;
         }
 
         private void _setup_styles () {

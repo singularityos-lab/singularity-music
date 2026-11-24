@@ -180,6 +180,17 @@ namespace Singularity.Apps.Music {
             get { return _levels.size > 1; }
         }
 
+        public Gee.List<BrowseLevel> levels {
+            get { return _levels; }
+        }
+
+        public void restore_levels (Gee.List<BrowseLevel> levels) {
+            if (levels.size == 0) return;
+            _levels.clear ();
+            _levels.add_all (levels);
+            reload ();
+        }
+
         public void open_root (MediaSource source, string? node, string title) {
             _levels.clear ();
             push (new BrowseLevel (source, node, title));

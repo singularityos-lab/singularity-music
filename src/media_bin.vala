@@ -23,6 +23,10 @@ namespace Singularity.Apps.Music {
         public signal void search_changed (string text);
         public signal void open_files ();
 
+        public string active {
+            get { return _active; }
+        }
+
         public MediaBin () {
             base (240);
             add_css_class ("sx-media-bin");

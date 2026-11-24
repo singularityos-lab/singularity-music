@@ -52,6 +52,11 @@ namespace Singularity.Apps.Music {
         private Cancellable? _resolve_cancel = null;
         private Cancellable? _lyrics_cancel = null;
 
+        private TrackInfo? _cue_track = null;
+        private int64 _cue_position = 0;
+        private bool _cue_play = false;
+        private bool _cue_pending = false;
+
         private TrackInfo? _scrobble_track = null;
         private DateTime? _scrobble_started = null;
         private int64 _scrobble_played = 0;
@@ -445,6 +450,7 @@ namespace Singularity.Apps.Music {
             if (pos < 0) pos = 0;
             if (dur > 0 && pos > dur) pos = dur;
             _player.seek (pos);
+            _update_position (pos, dur);
         }
 
         private void _set_repeat (int mode) {
@@ -938,6 +944,10 @@ namespace Singularity.Apps.Music {
 
         private void _play_track (TrackInfo? track) {
             if (track == null) return;
+            if (track != _cue_track) {
+                _cue_track = null;
+                _cue_pending = false;
+            }
             _finish_scrobble ();
             if (_resolve_cancel != null) _resolve_cancel.cancel ();
             _resolve_cancel = new Cancellable ();
@@ -954,8 +964,32 @@ namespace Singularity.Apps.Music {
 
         private void _start_local (TrackInfo track) {
             _local.load_uri (track.uri);
-            _local.play ();
-            _after_start (track);
+            if (_cue_track != track) {
+                _local.play ();
+                _after_start (track);
+                return;
+            }
+            _cue_track = null;
+            int64 at = _cue_position;
+            bool play = _cue_play;
+            _local.pause ();
+            int tries = 0;
+            Timeout.add (50, () => {
+                if (_playlist.current_track != track || !_cue_pending) return Source.REMOVE;
+                if (_local.get_duration () <= 0 && ++tries < 100) return Source.CONTINUE;
+                _cue_pending = false;
+                if (at > 0) _local.seek (at);
+                _update_position (at, _local.get_duration ());
+                if (play) {
+                    _local.play ();
+                    _after_start (track);
+                } else {
+                    _select_current_row ();
+                    _load_lyrics (track);
+                    _update_actions ();
+                }
+                return Source.REMOVE;
+            });
         }
 
         private void _after_start (TrackInfo track) {
@@ -1202,6 +1236,149 @@ namespace Singularity.Apps.Music {
                     _browse.reload ();
                 } catch {}
             });
+        }
+
+        public bool remote_playback {
+            get { return _isolated_active (); }
+        }
+
+        public Gtk.Window? mini_window {
+            get { return _mini_mode ? _mini : null; }
+        }
+
+        public Variant save_migration () {
+            var d = new VariantDict ();
+            var tracks = new VariantBuilder (new VariantType ("a(ssssxsssssb)"));
+            foreach (var t in _playlist.get_all ()) {
+                tracks.add ("(ssssxsssssb)", portable_uri (t.uri), t.title, t.artist, t.album, t.duration, t.source_id,
+                    portable_item (t.source_id, t.item_id), t.external_url, t.attribution, t.image_url, t.resolved);
+            }
+            d.insert_value ("queue", tracks.end ());
+            d.insert_value ("current", new Variant.int32 (_playlist.current_index));
+            d.insert_value ("playing", new Variant.boolean (_cue_pending ? _cue_play : _player.is_playing));
+            d.insert_value ("position", new Variant.int64 (_cue_pending ? _cue_position : (_playlist.current_track != null ? _player.get_position () : 0)));
+            d.insert_value ("shuffle", new Variant.boolean (_playlist.shuffle));
+            d.insert_value ("repeat", new Variant.int32 (_repeat_mode));
+            d.insert_value ("volume", new Variant.double (_now_playing.volume));
+            d.insert_value ("lyrics", new Variant.boolean (_lyrics_pane.reveal_panel));
+            d.insert_value ("mini", new Variant.boolean (_mini_mode));
+            d.insert_value ("root", new Variant.string (_root_stack.visible_child_name));
+            d.insert_value ("source", new Variant.string (_browse_source));
+            d.insert_value ("bin", new Variant.string (_bin.active));
+            var levels = new VariantBuilder (new VariantType ("a(sbssbsd)"));
+            foreach (var l in _browse.levels) {
+                levels.add ("(sbssbsd)", l.source.id, l.node != null, l.node ?? "", l.title, l.query != null, l.query ?? "", l.scroll);
+            }
+            d.insert_value ("levels", levels.end ());
+            return d.end ();
+        }
+
+        public void restore_migration (Variant data) {
+            var d = new VariantDict (data);
+            var volume = d.lookup_value ("volume", VariantType.DOUBLE);
+            if (volume != null) _now_playing.volume = volume.get_double ();
+            var shuffle = d.lookup_value ("shuffle", VariantType.BOOLEAN);
+            if (shuffle != null && shuffle.get_boolean () != _playlist.shuffle) _toggle_shuffle ();
+            var repeat = d.lookup_value ("repeat", VariantType.INT32);
+            if (repeat != null) _set_repeat (repeat.get_int32 ().clamp (0, 2));
+            var queue = d.lookup_value ("queue", new VariantType ("a(ssssxsssssb)"));
+            if (queue != null) {
+                _playlist.clear ();
+                foreach (var entry in queue) {
+                    var t = new TrackInfo ();
+                    t.uri = local_uri (entry.get_child_value (0).get_string ());
+                    t.title = entry.get_child_value (1).get_string ();
+                    t.artist = entry.get_child_value (2).get_string ();
+                    t.album = entry.get_child_value (3).get_string ();
+                    t.duration = entry.get_child_value (4).get_int64 ();
+                    t.source_id = entry.get_child_value (5).get_string ();
+                    t.item_id = local_item (t.source_id, entry.get_child_value (6).get_string ());
+                    t.external_url = entry.get_child_value (7).get_string ();
+                    t.attribution = entry.get_child_value (8).get_string ();
+                    t.image_url = entry.get_child_value (9).get_string ();
+                    t.resolved = entry.get_child_value (10).get_boolean ();
+                    if (t.source_id != "") {
+                        t.item = t.to_item ();
+                        t.item.image_url = t.image_url;
+                        t.item.external_url = t.external_url;
+                        t.item.attribution = t.attribution;
+                        if (t.source_id != LocalSource.ID) t.resolved = false;
+                    }
+                    _playlist.add_track (t);
+                }
+                int current = (d.lookup_value ("current", VariantType.INT32) ?? new Variant.int32 (-1)).get_int32 ();
+                var track = _playlist.get_track (current);
+                if (track != null) {
+                    _cue_track = track;
+                    _cue_pending = true;
+                    _cue_position = (d.lookup_value ("position", VariantType.INT64) ?? new Variant.int64 (0)).get_int64 ();
+                    _cue_play = (d.lookup_value ("playing", VariantType.BOOLEAN) ?? new Variant.boolean (false)).get_boolean ();
+                    _play_track (_playlist.play_index (current));
+                }
+            }
+            var lyrics = d.lookup_value ("lyrics", VariantType.BOOLEAN);
+            if (lyrics != null && lyrics.get_boolean () != _lyrics_pane.reveal_panel) _toggle_lyrics ();
+            var levels = d.lookup_value ("levels", new VariantType ("a(sbssbsd)"));
+            if (levels != null) {
+                var restored = new Gee.ArrayList<BrowseLevel> ();
+                foreach (var l in levels) {
+                    var source = _sources.find (l.get_child_value (0).get_string ());
+                    if (source == null) {
+                        restored.clear ();
+                        break;
+                    }
+                    string? node = l.get_child_value (1).get_boolean () ? l.get_child_value (2).get_string () : null;
+                    string? query = l.get_child_value (4).get_boolean () ? l.get_child_value (5).get_string () : null;
+                    var level = new BrowseLevel (source, node, l.get_child_value (3).get_string (), query);
+                    level.scroll = l.get_child_value (6).get_double ();
+                    restored.add (level);
+                }
+                _browse.restore_levels (restored);
+            }
+            string source = (d.lookup_value ("source", VariantType.STRING) ?? new Variant.string (_browse_source)).get_string ();
+            if (source == SpotifyPage.ID) {
+                _navigate (source, null, "");
+            } else if (source == "listen" || source == "now" || _sources.find (source) != null) {
+                _browse_source = source;
+            }
+            var bin = d.lookup_value ("bin", VariantType.STRING);
+            if (bin != null) _bin.set_active (bin.get_string ());
+            _update_welcome ();
+            string root = (d.lookup_value ("root", VariantType.STRING) ?? new Variant.string ("browse")).get_string ();
+            if (root == "player") _show_player ();
+            else _root_stack.visible_child_name = "browse";
+            var mini = d.lookup_value ("mini", VariantType.BOOLEAN);
+            if (mini != null && mini.get_boolean () != _mini_mode) _toggle_mini_player ();
+        }
+
+        public string[] migration_files () {
+            var found = new Gee.ArrayList<string> ();
+            foreach (var t in _playlist.get_all ()) {
+                if (!t.uri.has_prefix ("file://")) continue;
+                string path = Singularity.Migration.portable_path (File.new_for_uri (t.uri));
+                if (!found.contains (path)) found.add (path);
+            }
+            return found.to_array ();
+        }
+
+        private static string portable_uri (string uri) {
+            if (!uri.has_prefix ("file://")) return uri;
+            return Singularity.Migration.portable_path (File.new_for_uri (uri));
+        }
+
+        private static string local_uri (string portable) {
+            if (portable == "" || portable.contains ("://")) return portable;
+            return Singularity.Migration.local_file (portable).get_uri ();
+        }
+
+        private static string portable_item (string source_id, string item_id) {
+            if (source_id != LocalSource.ID || !item_id.has_prefix ("track:/")) return item_id;
+            return "track:" + Singularity.Migration.portable_path (File.new_for_path (item_id.substring (6)));
+        }
+
+        private static string local_item (string source_id, string item_id) {
+            if (source_id != LocalSource.ID || !item_id.has_prefix ("track:")) return item_id;
+            return "track:" + Singularity.Migration.local_file (item_id.substring (6)).get_path ();
         }
 
         public Playlist queue { get { return _playlist; } }
