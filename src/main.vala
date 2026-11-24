@@ -3,7 +3,7 @@ using GLib;
 
 namespace Singularity.Apps.Music {
 
-    public class MusicApp : Singularity.Application, Singularity.Migration.Migratable {
+    public class MusicApp : Singularity.Application, Singularity.Migration.Migratable, Singularity.Startup.Bootable {
 
         private MusicWindow? _window = null;
 
@@ -36,7 +36,7 @@ namespace Singularity.Apps.Music {
         public MusicLibrary library { get { return _search.library; } }
 
         public MusicWindow ensure_window () {
-            activate ();
+            show_window ();
             return _window;
         }
 
@@ -53,7 +53,7 @@ namespace Singularity.Apps.Music {
                     uris[j] = tmp;
                 }
                 if (uris.length > 0) play_uris (uris, true);
-                else activate ();
+                else show_window ();
                 release ();
             });
         }
@@ -142,7 +142,7 @@ namespace Singularity.Apps.Music {
             add_action (shuffle_all);
             var open_files = new SimpleAction ("open-files", null);
             open_files.activate.connect (() => {
-                activate ();
+                show_window ();
                 _window.activate_action ("open", null);
             });
             add_action (open_files);
@@ -166,7 +166,38 @@ namespace Singularity.Apps.Music {
             set_accels_for_action ("win.lyrics", { "<Control>y" });
         }
 
-        protected override void activate () {
+        public Singularity.Startup.Plan build_plan (Singularity.Startup.Request request) {
+            var plan = new Singularity.Startup.Plan ();
+            plan.version = "music-1";
+            if (request.kind == Singularity.Startup.RequestKind.SERVICE) {
+                plan.main ("ready", Singularity.Startup.Category.PREPARE, (c) => {})
+                    .reaches (Singularity.Startup.Milestone.SHELL_READY)
+                    .reaches (Singularity.Startup.Milestone.CONTENT_READY)
+                    .reaches (Singularity.Startup.Milestone.INTERACTIVE);
+                return plan;
+            }
+            var window = plan.main ("window", Singularity.Startup.Category.SHELL, (c) => {
+                show_window ();
+                c.window = _window;
+            }).reaches (Singularity.Startup.Milestone.SHELL_READY);
+            if (request.kind == Singularity.Startup.RequestKind.OPEN) {
+                var files = request.files ();
+                plan.main ("open-file", Singularity.Startup.Category.CONTENT, (c) => open_files (files))
+                    .depends_on ("window")
+                    .reaches (Singularity.Startup.Milestone.CONTENT_READY)
+                    .reaches (Singularity.Startup.Milestone.INTERACTIVE);
+            } else {
+                window.reaches (Singularity.Startup.Milestone.CONTENT_READY).reaches (Singularity.Startup.Milestone.INTERACTIVE);
+            }
+            return plan;
+        }
+
+        public void handle_request (Singularity.Startup.Request request) {
+            if (request.kind == Singularity.Startup.RequestKind.OPEN) open_files (request.files ());
+            else show_window ();
+        }
+
+        private void show_window () {
             if (_window == null) _window = _new_window ();
             _window.present ();
         }
@@ -361,13 +392,13 @@ namespace Singularity.Apps.Music {
 """;
 
         public void play_uris (string[] uris, bool replace) {
-            activate ();
+            show_window ();
             if (replace) _window.play_uris (uris);
             else _window.open_uris (uris);
         }
 
-        protected override void open (GLib.File[] files, string hint) {
-            activate ();
+        private void open_files (GLib.File[] files) {
+            show_window ();
             string[] uris = {};
             foreach (var f in files) uris += f.get_uri ();
             _window.open_uris (uris);
