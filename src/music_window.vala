@@ -292,12 +292,12 @@ namespace Singularity.Apps.Music {
 
         private void _go_next () {
             if (_isolated_active ()) _isolated.remote.next.begin ();
-            else _go_next ();
+            else _play_track (_playlist.next ());
         }
 
         private void _go_prev () {
             if (_isolated_active ()) _isolated.remote.previous.begin ();
-            else _go_prev ();
+            else _play_track (_playlist.prev ());
         }
 
         private void _play_isolated (RemotePlayer remote, MediaItem item, MediaItem? context) {
